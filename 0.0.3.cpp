@@ -118,4 +118,8 @@ int main(){
         }
         cout<<endl;
     }
+    for(unsigned int i=0; i<rows; ++i){
+        delete[]matrix[i];
+    }
+    delete[]matrix;
 }
