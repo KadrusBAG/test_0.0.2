@@ -4,15 +4,18 @@
 
 using namespace std;
 
-bool create(float ** & matrix, unsigned int & rows, unsigned int & columns){
+bool create(int ** & matrix, int & rows, int & columns){
     string RoCo;
     getline(cin, RoCo);
     istringstream RC(RoCo);
     char znak;
     if((RC>>rows)&&(RC>>znak)&&(znak==',')&&(RC>>columns)){
-        matrix=new float *[rows];
-        for(unsigned int i=0; i<rows; ++i){
-            matrix[i]=new float[columns];
+        matrix=new int *[rows];
+        for(int i=0; i<rows; ++i){
+            matrix[i]=new int[columns];
+            for(int j=0; j<columns; ++j){
+                matrix[i][j]=0;
+            }
         }
     }
     else{
@@ -21,57 +24,55 @@ bool create(float ** & matrix, unsigned int & rows, unsigned int & columns){
     return true;
 }
 
-void ulitka(float ** & matrix, int rows, int columns){
-    int j,i;
-	int t=1;
-	i=1;
-	int v=0;
-	int l=1,c=0,d=0;
-	int f1, f2;
-	f1=rows; f2=columns;
-	while (t<=rows*columns){
-	    for (j=v;j<f2;++j){          //заполняем справа на лево
-			matrix[i][j]=t;
-			++t;
+void ulitka(int ** matrix, int rows, int columns){
+    int i, j, k=1,  c=0, b;
+	b=rows*columns;
+    while(k<=rows*columns){
+		for(j=c; j<columns-c; ++j){
+			if(k>b){
+				break;
+			}
+			matrix[c][j]=k++;
 		}
-		v=j;
-		for (i=1;i<f1;++i){          //заполняем с верху вниз
-			matrix[i][j]=t;
-			++t;
+		for(i=c+1; i<rows-c; ++i){
+			if (k>b){
+				break;
+			}
+			matrix[i][columns-c-1]=k++;
 		}
-		l=i;
-		for (j=v;j>=c;--j){         //заполняем с лева на право
-            matrix[i][j]=t;
-			++t;
+		for(j=columns-c-2; j>=c; --j){
+			if(k>b){
+				break;
+			}
+			matrix[rows-c-1][j]=k++;
 		}
-        for (i=l;i>d;--i){          //заполняем с низу верх
-              matrix[i][j]=t;
-			++t;
+		j++;
+		for(i=rows-c-2; i>c; --i){
+			if(k>b){
+				break;
+			}
+			matrix[i][c]=k++;
 		}
-		--f1;
-		--f2;               //уменьшаем параметры матрицы(что бы числа шли внутрь а не заполнялись поверх тех которы уже заполнены)
-		++v;
-		++l;
-		++c;
-		++d;
+		c++;
 	}
 }
 
 int main(){
-    float **matrix; unsigned int rows, columns;
+    int **matrix, rows, columns;
     if(!(create(matrix, rows, columns))){
         cout<<"ERROR"<<endl;
         return -1;
     }
     ulitka(matrix, rows, columns);
-    for(unsigned int i=0; i<rows; ++i){
-        for(unsigned int j=0; j<columns; ++j){
+    for(int i=0; i<rows; ++i){
+        for(int j=0; j<columns; ++j){
             cout<<matrix[i][j]<<" ";
         }
         cout<<endl;
     }
-    for(unsigned int i=0; i<rows; ++i){
+    for(int i=0; i<rows; ++i){
         delete[]matrix[i];
     }
     delete[]matrix;
+    return 0;
 }
